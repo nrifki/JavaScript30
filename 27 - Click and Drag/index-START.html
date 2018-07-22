@@ -35,6 +35,56 @@
   </div>
 
 <script>
+  // we need to select all items
+  const slider = document.querySelector('.items');
+  // we also need some variables
+  let isDown = false; // our flag variable: false or true depending on whether we're clicking or not
+  let startX; // the initial click down (where is it)
+  let scrollLeft;
+
+  // then listen for number of different events
+  // a combination of mouse down, mouse leave, mouse up, mouse move
+ 
+ // when we first click down we'll add a class of active
+  slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    slider.classList.add('active');
+    // also need to figure out where we clicked
+    //console.log(e.pageX); // where we clicked on the whole page
+    // the thing is that our startX should not take into consideration where we clicked outside our slider element
+    startX = e.pageX - slider.offsetLeft;
+    // then when we move our mouse (while clicking) we need to know how far in px we need to scroll either to the right or to the left
+    scrollLeft = slider.scrollLeft;
+  });
+
+  slider.addEventListener('mouseleave', () => {
+    isDown = false;
+    slider.classList.remove('active');
+  });
+  
+  slider.addEventListener('mouseup', () => {
+    isDown = false;
+    slider.classList.remove('active');
+  });
+
+  slider.addEventListener('mousemove', (e) => {
+    //console.log(isDown); // it's true when clicking (mousedown)
+    //console.log('Do Work!'); // always woking (whether clicking or not)
+    if(!isDown) return; // this will simply stop the function from running
+    // the scroll left code for it to work
+    e.preventDefault(); // first of all let's prevent anything else that the browser might think we want to do while running this event
+    // we want to know where the cursor is at when we move it
+    const x = e.pageX - slider.offsetLeft; // we're simply recalculating the x (like we calculated the startX)
+    //console.log(x, startX); // it's working bitches nyahahahaha
+    //const walk = x - startX; // tells us how far we deviated from taht initial x
+    // I've choosen to fasten the scroll a bit so we'll be using this line instead
+    const walk = (x - startX) * 2.5;
+    //console.log(walk);
+    // now we need to make the scroll according to the value of walk
+    //slider.scrollLeft = walk; // yeah but no because it waits until you mouse up to make the scroll
+    slider.scrollLeft = scrollLeft - walk;
+  });
+
 </script>
 
   </body>

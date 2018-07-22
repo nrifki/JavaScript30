@@ -39,6 +39,40 @@
 
 <button></button>
 <script>
+  // let's listen on a click on all those three divs
+  const divs = document.querySelectorAll('div');
+  const button = document.querySelector('button');
+
+  // this function is just to consol log what happens when we click on the divs
+  function logText(e) {
+    console.log(this.classList.value); // whathappens is that it logs the div we clicked on but also all the divs above it (its parents but not its children) >>>> this is what we call BUBBLING
+  
+    // now let's talk about "stop propagation"
+    e.stopPropagation(); // this will make the event stop bubbling up (or down depending on the capture option)
+  }
+
+  // what if we do the same but this time listen on the click event on the body of the document
+  //document.body.addEventListener('click', logText); // it logs bod (because the parent of all those divs is body)
+
+  // our event listener for when we click on one of the divs that fires the logText function
+  //divs.forEach(div => div.addEventListener('click', logText));
+  // what if we pass a third argument to our event listener (which is an options object)
+  divs.forEach(div => div.addEventListener('click', logText, {
+    capture: false, // this option that we can add (if we made it capture: true) will make the event register from up to down (parents to children) instead od from down to up (children clicked to parent)
+    // all shinny and new: something called "once"
+    once: true
+    // this "once" option will unbind the event listener 
+    // in other words it will only run the click event once
+    // useful in ecommerce websites like in store checkouts (check the button example on this page)
+    // it's like using
+    //div.removeEventListener('click', logText);
+  }));
+
+  button.addEventListener('click', () => {
+    console.log('Here is your click Motherfucker!');
+  }, {
+    once: true
+  });
 
 </script>
 </body>

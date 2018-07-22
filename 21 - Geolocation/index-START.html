@@ -58,6 +58,21 @@
     /*Compass: https://thenounproject.com/search/?q=compass&i=592352*/
   </style>
   <script>
+    // first we need to select both the arrow and the km/h
+    const arrow = document.querySelector('.arrow');
+    const speed = document.querySelector('.speed-value');
+
+    // now we need the user location
+    // accessed through...
+    navigator.geolocation.watchPosition((data) => {
+      //console.log(data); // as soon as you allow the device to grab your location you'll see data flowing in your console
+      // among the data we have in our data logged in our console we need to use speed and heading
+      speed.textContent = data.coords.speed;
+      arrow.style.transform = `rotate(${data.coords.heading}deg)`;
+    }, (err) => {
+      console.error(err);
+      alert('YO BRO! give us access if you wanna use this gem');
+    }); // the first function is success when they give us access to their location SO THE LAST function (err) is to add is an alert to the error that we need to access their geolocation to ge this shit rolling
   </script>
 </body>
 </html>

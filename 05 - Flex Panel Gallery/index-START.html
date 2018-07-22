@@ -24,6 +24,8 @@
     .panels {
       min-height:100vh;
       overflow: hidden;
+      /* Gets the panels displayed side by side (vertical instead of horizontal) */
+      display: flex;
     }
 
     .panel {
@@ -34,6 +36,7 @@
       align-items:center;
       /* Safari transitionend event.propertyName === flex */
       /* Chrome + FF transitionend event.propertyName === flex-grow */
+      /* We're using the cubic bezier to get that snappy in and out effect */
       transition:
         font-size 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
         flex 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
@@ -41,6 +44,16 @@
       font-size: 20px;
       background-size:cover;
       background-position:center;
+      /* Make each panel take as much room as the others (splits the available space instead of just as much as it's longest word length) */
+      flex: 1;
+      /* centers the text of the horizontal level */
+      justify-content: center;
+      /* centers the text of the vertical level */
+      align-items: center;
+      /* So fat panels is the flex container and panel is the flex item, but by adding this line of code below we're making it also a flex container (and so it's children will be flex items) */
+      display: flex;
+      /* otherwise the children (p: the text) will be stacked from left to right (but like this we'll stack it vertically) */
+      flex-direction: column;
     }
 
 
@@ -50,11 +63,47 @@
     .panel4 { background-image:url(https://source.unsplash.com/ITjiVXcwVng/1500x1500); }
     .panel5 { background-image:url(https://source.unsplash.com/3MNzGlQM7qs/1500x1500); }
 
+    /* flex children (in this case p, but if in another case it could be p or any other element on the same level or as children of its chldren) */
     .panel > * {
       margin:0;
       width: 100%;
       transition:transform 0.5s;
+      /* Just to see what's going on visually (but you can take it later) */
+      /* border: 1px solid red; */
+      /* 0 0 0 will keep the three children just stacked one on the other in the center */
+      /* 0 1 0 and 0 0 1 will do the same as 0 0 0 */
+      /* 1 0 0 and 1 0 auto will make each p take the third of each column */
+      /* flex is a shortcut for flex-grow, flex-shrink, and flex-basis */
+      /* in this case flex-grow = 1, flex-shrink = 0, and flex-basis = auto */
+      flex: 1 0 auto;
+      /* so they're also becoming flex containers (like panel) */
+      display: flex;
+      /* because the display flex brought the elements to the left we need to center them again */
+      justify-content: center;
+      /* now center them on the vertical axis */
+      align-items: center;
     }
+    
+    /* to put the first children of each panel off screen */
+    .panel > *:first-child {
+      transform: translateY(-100%);
+    }
+
+    /* when we add the class open-active via javascript it transitions to its place */
+    .panel.open-active > *:first-child {
+      transform: translateY(0);
+    }
+
+    /* to put the last children of each panel off screen */
+    .panel > *:last-child {
+      transform: translateY(100%);
+    }
+
+    /* when we add the class open-active via javascript it transitions to its place */
+    .panel.open-active > *:last-child {
+      transform: translateY(0);
+    }
+
 
     .panel p {
       text-transform: uppercase;
@@ -67,6 +116,10 @@
     }
 
     .panel.open {
+      /* when it gets the class open via javascript the box size increases */
+      /* flex of 5 means it's going to take 5 time the amount of extra space available (instead of 1 when it gets as much as the others) */
+      flex: 5;
+      /* when it gets the class open via javascript the font size increases */
       font-size:40px;
     }
 
@@ -102,6 +155,32 @@
   </div>
 
   <script>
+
+    // Grabbing all the elements class panel
+    const panels = document.querySelectorAll('.panel');
+
+    function toggleOpen() {
+      this.classList.toggle('open');
+    }
+    
+    // Can't use this one because there are multiple transition events fired
+    // the event transition fired : flex-grow and flex-size
+    // but we only care about the transition of the : flex-grow (flex: 5 in the css)
+    //function toggleActive() {
+      //this.classList.toggle('open-active');
+    //}
+    function toggleActive(e) {
+      console.log(e.propertyName);
+      // includes instead of === to cover both flex and flex-grow (see css comment about browsers)
+      if(e.propertyName.includes('flex')) {
+        this.classList.toggle('open-active');
+      }
+    }
+    
+    // loops though each panel in panels >> Listen to the 'click' event >> applies the function toggleOpen >> that adds class of open to the panel clicked
+    panels.forEach(panel => panel.addEventListener('click', toggleOpen));
+    // loops though each panel in panels >> Listen to the 'transitionend' event (when the transition of the click event ends) >> applies the function toggleActive >> that adds class of open-active to the panel
+    panels.forEach(panel => panel.addEventListener('transitionend', toggleActive));
 
   </script>
 

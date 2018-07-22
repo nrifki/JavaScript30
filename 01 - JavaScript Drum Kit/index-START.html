@@ -59,6 +59,32 @@
 
 <script>
 
+  function playSound(e) {
+    // Affects the right audio object to the right key
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    // Selects the right key pressed (class=key in CSS to which a JS key Code is affected to)
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+    // If it's not one of the keyCodes, the funciton doesn't run
+    if (!audio) return;
+    // Allows us to press and reinitialize the function (before the sound finishes)
+    audio.currentTime = 0;
+    audio.play();
+    // Plays the transition
+    key.classList.add('playing');
+  };
+
+  function removeTransition(e) {
+    if (e.propertyName !== 'transform') return;
+    this.classList.remove('playing');
+  };
+
+  // Adds and event listener to each key to remove the transition when the transition ends.
+  const keys = document.querySelectorAll('.key');
+  keys.forEach(key =>  key.addEventListener('transitionend', removeTransition));
+
+  // Playing the Sound, but it's at the end (after removing the transition) to reinitialize everything beforehand.
+  window.addEventListener('keydown', playSound);
+  
 </script>
 
 

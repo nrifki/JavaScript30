@@ -182,6 +182,37 @@
     </li>
   </ul>
 <script>
+  // HOW CAN WE ADD THE TOTAL NUMBER OF HOURS, MINUTES, AND SECONDS OF ALL THE VIDEOS ABOVE ?
+
+  // how to pull them from the dom ?
+  //const timeNodes = document.querySelectorAll('[data-time]');
+  // but we need to turn timeNodes from a node list to an actual array
+  // we could spread it into an array like this: const timeNodes = [...document.querySelectorAll('[data-time]')];
+  // or run array.from
+  const timeNodes = Array.from(document.querySelectorAll('[data-time]'));
+
+  const seconds = timeNodes
+    .map(node => node.dataset.time) // from an array of list items into an array of strings
+    .map(timeCode => {
+      const [mins, secs]= timeCode.split(':') // turn them into miutes and seconds BUT they're black (when console logged) so that means they're strings
+      .map(parseFloat); // here we go : we have numbrs we can play with
+      
+      return (mins * 60) + secs; // this gives us an array of seconds
+    }) 
+    // now how do we add them together ?
+    .reduce((total, vidSeconds) => total + vidSeconds); // reduce them down into one big number
+    // easy peasy now we got our total number of seconds :)
+
+
+  // NOW CHOP IT DOWN BITCH into hours, minutes and seconds
+  let secondsLeft = seconds;
+  const hours = Math.floor(secondsLeft / 3600); // math.floor to get the minimum (if we have 4.98 we only return 4)
+  secondsLeft = secondsLeft % 3600; // now we get the seconds left after those 4 hours we got
+  const mins = Math.floor(secondsLeft / 60);
+  secondsLeft = secondsLeft % 60;
+
+  console.log(hours, mins, secondsLeft); // HERE WE GO :) we know now how many total hours, mins, and seconds all those videos total
+
 </script>
 </body>
 </html>

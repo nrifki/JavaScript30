@@ -5,7 +5,7 @@
   <title>Follow Along Nav</title>
 </head>
 <body>
-  <h2>Cool</h2>
+  <!-- <h2>Cool</h2> -->
   <nav class="top">
     <div class="dropdownBackground">
       <span class="arrow"></span>
@@ -148,8 +148,6 @@
     opacity: 1;
   }
 
-
-
   .dropdownBackground {
     width:100px;
     height:100px;
@@ -221,6 +219,88 @@
 </style>
 
 <script>
+  // first we need to grab the triggers
+  const triggers = document.querySelectorAll('.cool > li'); // .cool > li means all the direct li descendants  of the .cool class
+  // now grabbing the droopdown background
+  const background = document.querySelector('.dropdownBackground'); // btw it's the same div (background) used for all three links, it just moves from to the other
+  // also grab our nav
+  const nav = document.querySelector('.top');
+
+  // we also want to listen for a  hover in and a hover out / mouse enter and a mouse leave on each of those list items (li)
+
+  // NOW let's break this shit down into two parts
+  // FIRST >>> let's just get the content of the dropdown showing when we hover in
+  // how ? by adding and removing classes + leaning on our css to do the work for us
+
+  function handleEnter() {
+    //console.log('ENTER');
+    this.classList.add('trigger-enter');
+    //setTimeout(function() {
+      //this.classList.add('trigger-enter-active'); // sweety this won't work because the browser won't find the classlist of this. Why ? because it's entered into a new function
+    //}, 150);
+    // let's change it into an arrow function baby (because here this will not be window but the li because this will inherit from the parent function)
+    // setTimeout(() => this.classList.add('trigger-enter-active'), 150); that problem when we hover fast...
+    //setTimeout(() => {
+      //if(this.classList.contains('trigger-enter')) {
+        //this.classList.add('trigger-enter-active');
+      //}
+    //}, 150); // can we make it shorter please ?
+    setTimeout(() => this.classList.contains('trigger-enter') && this.classList.add('trigger-enter-active'), 150);
+    // btw we had to do all this trigger-enter with opacity : block and trigger-enter-active opacity : 1 because you simply can't move from opactity 0 to 1 in css just like this
+
+    // SECOND >>> set up the follow along div
+    // start by getting that white baby shit on the page : the background we grabbed earlier
+    background.classList.add('open'); // it is on the page... just not the size nor at the place we want
+    
+    // figure out how big this ul (with a class of dropdown)
+    // then can that little white div go behind it so we get the little animation WE'RE STRIVING FOR
+
+    // figuring our what is that dropdown
+    const dropdown = this.querySelector('.dropdown'); // we're doing it here instead of up there so it can be dynamic (up there is ALL dropdowns, here is THE dropdown we're hovering on)
+    //console.log(dropdown);
+    // now let's take its coordinates
+    const dropdownCoords = dropdown.getBoundingClientRect();
+    //console.log(dropdownCoords); // we get its x, y, width, height, top.
+    
+    // now need to get info from where the nav is
+    // WHY ? darling it's because we can't just assume that this nav tag will always be the first thing on the page
+    // ... what if you have an h2 that says hello motherfuckers... that will mess up your life for sure
+    // so let's get the nav coordinates :)
+    const navCoords = nav.getBoundingClientRect();
+    //console.log(navCoords); //indeed they are different my dear motherfucking friend
+  
+    // now let's get those two coordinates together baby
+    const coords = {
+      height: dropdownCoords.height,
+      width: dropdownCoords.width,
+      //top: dropdownCoords.top,
+      //left: dropdownCoords.left
+      // we need to take into consideratio our nav coords otherwise we'll mess up everything with anything we add
+      top: dropdownCoords.top - navCoords.top,
+      left: dropdownCoords.left - navCoords.left // NOW IT WORKS LIKE A CHARM :)
+      
+      // maybe one last thing... because you see when you hover in and out reeaaaaal fast it takes a while to sync all this shit soooo...
+
+    }
+    // now let's use those coords to style our backgrounds
+    background.style.setProperty('width', `${coords.width}px`);
+    background.style.setProperty('height', `${coords.height}px`);
+    background.style.setProperty('transform', `translate(${coords.left}px, ${coords.top}px)`); // not quite yet... (because of that cool we added in the html as h2.. we're taking it down but see ? that was to make a point motherfucking sweet dear friend)
+    // heheheeeee our little background guy takes the right size.. but still in its corner
+    // let's go back to our coords and work that our coords variable and our background style here above
+    // what's the problem ? it's the settimout sweet pie
+    // so let's fix it :)
+  }
+
+  function handleLeave() {
+    //console.log('LEAVE');
+    this.classList.remove('trigger-enter', 'trigger-enter-active'); // yeah we're badasses and we just remove it in one shot, problem bro' ?
+    background.classList.remove('open');
+  }
+
+  triggers.forEach(trigger => trigger.addEventListener('mouseenter', handleEnter));
+  triggers.forEach(trigger => trigger.addEventListener('mouseleave', handleLeave));
+
 </script>
 
 </body>

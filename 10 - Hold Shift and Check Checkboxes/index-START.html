@@ -1,59 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Hold Shift to Check Multiple Checkboxes</title>
 </head>
+
 <body>
   <style>
-
     html {
       font-family: sans-serif;
-      background:#ffc600;
+      background: #ffc600;
     }
 
     .inbox {
-      max-width:400px;
-      margin:50px auto;
-      background:white;
-      border-radius:5px;
-      box-shadow:10px 10px 0 rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 5px;
+      box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.1);
     }
 
     .item {
-      display:flex;
-      align-items:center;
+      display: flex;
+      align-items: center;
       border-bottom: 1px solid #F1F1F1;
     }
 
     .item:last-child {
-      border-bottom:0;
+      border-bottom: 0;
     }
 
 
-    input:checked + p {
-      background:#F9F9F9;
+    input:checked+p {
+      background: #F9F9F9;
       text-decoration: line-through;
     }
 
     input[type="checkbox"] {
-      margin:20px;
+      margin: 20px;
     }
 
     p {
-      margin:0;
-      padding:20px;
-      transition:background 0.2s;
-      flex:1;
-      font-family:'helvetica neue';
+      margin: 0;
+      padding: 20px;
+      transition: background 0.2s;
+      flex: 1;
+      font-family: 'helvetica neue';
       font-size: 20px;
       font-weight: 200;
       border-left: 1px solid #D1E2FF;
     }
-
-
   </style>
-   <!--
+  <!--
    The following is a common layout you would see in an email client.
 
    When a user clicks a checkbox, holds Shift, and then clicks another checkbox a few rows down, all the checkboxes inbetween those two checkboxes should be checked.
@@ -62,6 +61,7 @@
   <div class="inbox">
     <div class="item">
       <input type="checkbox">
+      <!-- a <label> would be more suited -->
       <p>This is an inbox layout.</p>
     </div>
     <div class="item">
@@ -98,7 +98,39 @@
     </div>
   </div>
 
-<script>
-</script>
+  <script>
+    // Grab all the items to listen when they are checked
+    const checkboxes = document.querySelectorAll('.inbox input[type="checkbox');
+
+    // to keep track of which checkbox was last checked
+    let lastChecked;
+
+    function handleCheck(e) {
+      let inBetween = false;
+      // check if they had the shift key down
+      // AND check that they are checking it (not unchecking it)
+      if (e.shiftKey && this.checked) {
+        // go ahead and do what we want
+        // loop through each checkbox >> look for the first one checked >> and the last one checked >> then stop the application of what we want to do
+        // the in between variable will tell us where to start and where to stop
+        checkboxes.forEach(checkbox => {
+          if (checkbox === this || checkbox === lastChecked) {
+            inBetween = !inBetween;
+            // if we console.log here we see that whataver string we pass in the console log appears below the first checked and last checked
+          }
+
+          if (inBetween) {
+            // checked is a filter condition (see CSS above)
+            checkbox.checked = true; // BAAAAAM NAILED IT with this last line of code
+          }
+        });
+      }
+      lastChecked = this;
+    }
+
+    // now listen when one of them gets clicked or changed
+    checkboxes.forEach(checkbox => checkbox.addEventListener('click', handleCheck));
+  </script>
 </body>
+
 </html>

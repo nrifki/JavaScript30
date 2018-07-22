@@ -15,6 +15,39 @@
   </div>
 
 <script>
+  const speed = document.querySelector('.speed');
+  const bar = speed.querySelector('.speed-bar');
+  const video = document.querySelector('.flex');
+
+  function handleMove(e) {
+    // start coding the visual
+    
+    //console.log(e); // moving the mouse inside the speed bar logs the event with its coordinates
+    const y = e.pageY - this.offsetTop;
+    //console.log(y); // the y coordinates where our mouse is moving inside the speed bar
+    // we want to turn this y coordinates we get into a %
+    const percent = y / this.offsetHeight;
+    //console.log(percent);
+    // now we need a min and a max of speed
+    const min = 0.4;
+    const max = 4;
+    const height = Math.round(percent * 100) + '%';
+    //console.log(height);
+
+    // now we're going to make our bar move as far as the height where ou mouse moved
+    bar.style.height = height;
+    // we also need to update the number inside the bar
+    const playbackRate = percent * (max - min) + min;
+    bar.textContent = playbackRate.toFixed(2) + 'x'; // to fixed to have only have two decimals
+  
+    // then wrtite the code for the implementation
+    
+    // so now we need to apply that playbackRate we made above to the actual video
+    video.playbackRate = playbackRate;
+  }
+
+  speed.addEventListener('mousemove', handleMove);
+
 </script>
 </body>
 </html>

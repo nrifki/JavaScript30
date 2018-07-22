@@ -22,6 +22,25 @@
 
   <style>
 
+    /* Root (where we're setting the default values of our variables) is the highest level you can get, it's like declaring on the HTML element*/
+    :root {
+      --base: #ffc600;
+      --spacing: 10px;
+      --blur: 10px;
+    }
+
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      /* Because filter has many functions, we had to declare the blur function before declaring its variable blur (so it's not useless repetition) */
+      filter: blur(var(--blur));
+    }
+    
+    /* The word JS is the one highlighted (check the HTML) */
+    .hl {
+      color: var(--base);
+    }
+
     /*
       misc styles, nothing to do with CSS variables
     */
@@ -45,6 +64,25 @@
   </style>
 
   <script>
+
+    function handleUpdates() {
+
+      // grabs the data-sizing data attribute from the input element's class
+      // we add or '' so we don't leave the suffix undefined for inputs like color who don't have a suffix
+      const suffix = this.dataset.sizing || '';
+
+      // Updates the actual variable by selecting the entire document (root) and set a property of base, spacing, blur
+      // this.name = spacing || blur || base
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);
+    }
+    
+    // Selecting all the inputs on the page
+    const inputs = document.querySelectorAll('.controls input');
+
+    // Loops through each input and listen to the events declared to apply the handleUpdates function
+    inputs.forEach(input => input.addEventListener('change', handleUpdates));
+    inputs.forEach(input => input.addEventListener('mousemove', handleUpdates));
+    
   </script>
 
 </body>

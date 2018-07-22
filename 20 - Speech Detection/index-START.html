@@ -10,8 +10,49 @@
   </div>
 
 <script>
+  // IT'S JUST FREAKING AMAZING THAT WE CAN DO THIS WITHOUT ANY LIBRARIES OR ANYTHING JUST STRAIGHT UP USING THE BROWSER
+
+  // this is a global variable that lives in the browser
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+  // create a new instance of speech recognition
+  const recognition = new SpeechRecognition();
+  recognition.interinResults = true; // what will it do ? so as you speak you will see what you saying as you're speaking
+
+  // now let's create a paragraph
+  // we need it because whenever we stop speaking we end the paragraph and as soon as we start speaking again it creates a new paragraph
+  let p = document.createElement('p');
+  const words = document.querySelector('.words'); // we also need to grab the dv with class of words from the HTML
+  words.appendChild(p); // we're putting it into the dom as we are speaking
+
+  // we're listening here for a result, to get an event
+  recognition.addEventListener('result', e => {
+    // console.log(e.results)
+    // turn the results into a string
+    const transcript = Array.from(e.results) // we're going to map through it
+      .map(result => result[0])
+      .map(result => result.transcript) // mapping through it again to get it as a string
+      .join(''); // join the different pieces said into one long ass string
+    //console.log(transcript);
+
+    // now we need to put it into the paragraph tag
+    p.textContent = transcript; // the thing is that it's working but whenever you speak again you overwrite instead of adding another paragraph
+    if (e.results[0].isFinal) {
+      p = document.createElement('p');
+      words.appendChild(p);
+    } // now whenever we speak again it creates another paragraph
+    
+    // you can even add this : so whenever you say poop etc you get the emoji
+    // you can even use it for wheather and hook it to an api or some shit
+    const poopScript = transcript.replace(/caca|khra|beurk/gi, '💩');
+      p.textContent = poopScript;
+  });
+
+  // adding another event listener for the end event so we can rerun the function
+  recognition.addEventListener('end', recognition.start);
+
+  // we're starting the recognition (otherwise the event listener won't run)
+  recognition.start();
 
 </script>
 

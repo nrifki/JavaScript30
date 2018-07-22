@@ -20,21 +20,73 @@
       <input name="rate" type="range" min="0" max="3" value="1" step="0.1">
 
       <label for="pitch">Pitch:</label>
-
       <input name="pitch" type="range" min="0" max="2" step="0.1">
+
       <textarea name="text">Hello! I love JavaScript 👍</textarea>
+
       <button id="stop">Stop!</button>
       <button id="speak">Speak</button>
 
     </div>
 
 <script>
-  const msg = new SpeechSynthesisUtterance();
-  let voices = [];
-  const voicesDropdown = document.querySelector('[name="voice"]');
-  const options = document.querySelectorAll('[type="range"], [name="text"]');
+  const msg = new SpeechSynthesisUtterance(); // what's the person is going to say
+  let voices = []; // the voices are goingto be dumped here
+  const voicesDropdown = document.querySelector('[name="voice"]'); // the voices
+  const options = document.querySelectorAll('[type="range"], [name="text"]'); // the rate + the pitch + the message
   const speakButton = document.querySelector('#speak');
   const stopButton = document.querySelector('#stop');
+
+  // let's set up the default message to whatever is typed in the text area
+  msg.text = document.querySelector('[name="text').value; // if we console log msg we get the speechSynthesisUtterance array with the text typed in the box
+
+  // let's populate voices with the different voices
+  function populateVoices() {
+    voices = this.getVoices();
+    //console.log(voices); // we get a beautiful bunch of voices :) (more than a windows user mouwahahaha)
+    // now let's set them as options in our select a voice dropdown
+    voicesDropdown.innerHTML = voices
+      //.filter(voice -> voice.lang.includes('en')) // here we're just filtering.. but I don't want to filter hihihiii
+      .map(voice => `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`)
+      .join(''); // now if we call on our console speechSynthesis.speak(msg) we get the message in the box said in the default voice
+  }
+
+  // so this is cool but we still wanna' be able to choose a voice we like to mess around
+  function setVoice() {
+    msg.voice = voices.find(voice => voice.name === this.value); // what will this do is to loop through each one of our voices and find the voice of which value corresponds to the selected name
+    // so much fun hahahahaaaa it's working
+    toggle();
+  }
+
+  // the function below restarts it every time I change the voice
+  function toggle(startOver = true) {
+    speechSynthesis.cancel(); // if speaking and selecting a new voice it stops talking
+    if (startOver) {
+      speechSynthesis.speak(msg); // lets the new voice take over
+      // we also have to go to the set voice function and add the toggle function so it can be activated once a new voice is selected
+    }
+  }
+
+  // AND NOOOOOOOW
+  // :) we need to play with our rate + pitch + message (the functions )
+  function setOption() {
+    //console.log(this.name, this.value);
+    // it console logs for:
+    // the rate its value
+    // the pitch its value
+    // the text message whenever changed and clicked on the button speak
+    msg[this.name] = this.value;
+    toggle(); // the toggle function is run again whenever a change occurs in those three options we got
+  }
+
+  speechSynthesis.addEventListener('voiceschanged', populateVoices);
+  voicesDropdown.addEventListener('change', setVoice);
+  // listen on a change event on each of our option: input, input, and textarea
+  options.forEach(option => option.addEventListener('change', setOption));
+  // now listen to the buttons
+  speakButton.addEventListener('click', toggle);
+  stopButton.addEventListener('click', toggle.bind(null, false)); // here is a trick (because you can't use a false boolean on a function ... like come on)
+
 </script>
 
 </body>

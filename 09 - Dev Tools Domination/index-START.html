@@ -6,7 +6,7 @@
 </head>
 <body>
 
-  <p onClick="makeGreen()">×BREAK×DOWN×</p>
+  <p onClick="makeGreen()">×BREAK×DOWN×</p> <!-- by the way we could have done it as an event listener in JS, but this works too -->
 
   <script>
     const dogs = [{ name: 'Snickers', age: 2 }, { name: 'hugo', age: 8 }];
@@ -18,28 +18,67 @@
     }
 
     // Regular
+    console.log('hello');
 
     // Interpolated
+    // %s interpolates the second expression into the first one so here it will give us "Hello I am a shit string"
+    // better not use it as you can use ES6 back ticks
+    // console.log(`Hello I am a ${var} string!`);
+    console.log('Hello I am a %s string!', '💩');
 
     // Styled
+    console.log('%c I am some great text', 'font-size: 50px; background: red; text-shadow: 10px 10px 0 blue');
 
     // warning!
+    console.warn('OH NOOO');
 
     // Error :|
+    console.error('Woops!');
 
     // Info
+    console.info('Cakou hurts!');
 
-    // Testing
+    // Testing (testing if things are true)
+    console.assert(1 === 1, 'Wrong one buddy!');
+    // if we run this one we won't have any error showing on our console
+    // because it only shows the error statement passed as the second argument if the first argument is not met / wrong
+    // like for this one
+    console.assert(1 === 1, 'Wrong one buddy!');
+    // another exemple
+    const p = document.querySelector('p');
+    console.assert(p.classList.contains('Boom Chica Boom Boom'), 'Ain\'t it Mothe*****er!');
 
     // clearing
+    // handy to mess up with your fellow programmers (mouwahahahahahaaaahaaaaaa!)
+    console.clear();
 
     // Viewing DOM Elements
+    console.log(p); // shows only the line code
+    console.dir(p);// shows available methods and properties of the DOM element
+    console.clear();
 
     // Grouping together
+    dogs.forEach(dog => {
+      console.groupCollapsed(`${dog.name}`);
+      console.log(`This is ${dog.name}`);
+      console.log(`This is ${dog.name} is ${dog.age} years old`);
+      console.log(`This is ${dog.name} is ${dog.age * 7} dog years old`);
+      console.groupEnd(`${dog.name}`);
+    });
 
     // counting
+    // counts how many times you used a name, dom element, dom noun, etc. (here 1 time)
+    console.count('Wes');
 
     // timing
+    // to see how long something takes
+    console.time('fetching data');
+    fetch('https://api.github.com/users/wesbos')
+      .then(data => data.json())
+      .then(data => {
+        console.timeEnd('fetching data'); // must be the same string
+        console.log(data);
+      });
 
   </script>
 </body>

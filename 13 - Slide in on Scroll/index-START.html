@@ -43,6 +43,43 @@
   </div>
 
   <script>
+
+    // selecting all the images
+    const sliderImages = document.querySelectorAll('.slide-in');
+
+    // function running every time the person scrolls
+    function checkSlide(e) {
+        // step 1 >>> loop through every image
+        sliderImages.forEach(sliderImage => {
+          // step 2 >>> figure out where the image needs to be shown
+          // the point is to show the image (animate it when we reach 50% of the image)
+            // window.scrollY is how far we've scrolled at
+            // window.innerHeight gives us the pixel level at which we are at the bottom of our window
+            // dividing it by 2 will give the pixel level of when each of the images should be slide in (when we reach 50% of the image)
+          const slideInAt = (window.scrollY + window.innerHeight) - sliderImage.height / 2;
+          
+          // step 3 >>> figure out the bottom of the image to slide it back outside the window when we scroll past the image
+            // why do this ?
+            // so we can have the same slidein effect when we scroll back up
+              // offsetTop is going to tell us the top of the image is how far from the window
+          const imageBottom = sliderImage.offsetTop + sliderImage.height; // adding the image height to its offsetTop gives us its position from its bottom
+
+          // step 4 >>> figure out if the image is half shown 
+          const isHalfShown = slideInAt > sliderImage.offsetTop; // making sure the slideInAt value is greater than where the actual image is
+          
+          // step 5 >>> if the image is not scrolled past it
+          const isNotScrolledPast = window.scrollY < imageBottom; // making sure that we are not scroll all the way past the image
+
+          // step 6 >>> our if statement that will do all the magic ;)
+          if(isHalfShown && isNotScrolledPast) {
+            sliderImage.classList.add('active'); // so if both variables are met the animation is active
+          } else { // else means that we simply didn't get yet to 50% of the image or that we scrolled past the image
+            sliderImage.classList.remove('active');
+          }
+        })
+    }
+
+    // debouncing means : only run the function checkSlide every x time (in this case every 20 milliseconds)
     function debounce(func, wait = 20, immediate = true) {
       var timeout;
       return function() {
@@ -57,6 +94,12 @@
         if (callNow) func.apply(context, args);
       };
     }
+    
+    // event listener making the function checkSlide run every time a scroll is refistred
+    //window.addEventListener('scroll', checkSlide);
+    // we have to add the debounce function so :
+    // checklist function only runs according to the debounce function rules
+    window.addEventListener('scroll', debounce(checkSlide));
 
   </script>
 

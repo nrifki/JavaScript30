@@ -7,6 +7,23 @@
 </head>
 <body>
 <script>
+  const pressed = []; // the array where we're storing the pressed keys
+  const secretCode = 'nada';
+
+  window.addEventListener('keyup', (e) => {
+    console.log(e.key); // tells us which key they pressed
+    pressed.push(e.key);
+    // trimming the array to the max keys pressed needed (in our casa 4 because nada contains only 4)
+    // we need to start from the end using negatif
+    pressed.splice(-secretCode.length - 1, pressed.length - secretCode.length);
+    console.log(pressed); // showing us the array with the trimmed pushed keys pressed
+    // join('') transforms the array into a string
+    if(pressed.join('').includes(secretCode)) {
+      console.log('DING DANG DONG!');
+      // adding random unicorns and rainbows (hihi)
+      cornify_add();
+    }
+  })
 </script>
 </body>
 </html>

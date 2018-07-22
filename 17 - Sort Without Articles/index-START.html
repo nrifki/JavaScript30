@@ -46,6 +46,26 @@
 <script>
 const bands = ['The Plot in You', 'The Devil Wears Prada', 'Pierce the Veil', 'Norma Jean', 'The Bled', 'Say Anything', 'The Midway State', 'We Came as Romans', 'Counterparts', 'Oh, Sleeper', 'A Skylit Drive', 'Anywhere But Here', 'An Old Dog'];
 
+// how to sort them without the a the and an at the beg of the band name ?
+
+// striping the band names from their articles using reg expressions
+function strip(bandName) {
+  // the /^ is for when the band name starts with x
+  // the space after so it doesn't take also the band names that start with those letters instead of only as articles
+  // the /i is making it insensitive so whether minuscule or majuscule
+  return bandName.replace(/^(an |the |a )/i).trim();
+}
+
+// sorting the band names
+// we just have to add the strip function to the a and b
+const sortedBands = bands.sort((a,b) => strip(a) > strip(b) ? 1 : -1 );
+
+// FINALLY
+// we just need to make it appear in the HTML :)
+document.querySelector('#bands').innerHTML = 
+  sortedBands
+  .map(band => `<li>${band}</li>`)
+  .join(''); // we're looping through each element of the band names (mapping it) to appear in the html of the element with the class of bands ALSO we added .join at the end so it doesn't make them appear with a comma after each band name (so we're making it a long ass string so we don't get the commas)
 
 </script>
 

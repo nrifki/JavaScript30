@@ -55,6 +55,35 @@
 
 <script>
 
+  // first thing: grab the nav
+  const nav = document.querySelector('#main');
+  // grab the top of the nav
+  const topOfNav = nav.offsetTop;
+
+  // function that will make the nav sticky on the page
+  function fixNav() {
+    // need to figure out when the top of the nav reaches the top of the window
+    // so as soon as we scroll past the top of the nav it becomes a sticky nav
+    //console.log(topOfNav, window.scrollY); // window.scrollY wis how far we've scrolled so far
+    if(window.scrollY >= topOfNav) {
+      document.body.style.paddingTop = nav.offsetHeight + 'px'; // fixing the boucing content problem we talked about below
+      document.body.classList.add('fixed-nav');
+    } else {
+      document.body.style.paddingTop = 0; // again the other part of the solution to the boucing content problemo
+      document.body.classList.remove('fixed-nav');
+    } // NOW IT'S TIME TO GO TO OUR CSS
+    // so after adding this (here and in our css) it's working but it's kind of weird as it makes the text below bounce a little when it reaches the topOfNav
+    // why is this happening ??
+    // simply because the nav bar used to take space but as soon as it became fixed it no longer was taking space as it became just sticky and the content below jumped up to take its place
+    // so we need to add some padding to our body element as soon as it becomes fixed
+  }
+
+  // NOW THE LOGO THAT MAGICLY APPEARS when the nav becomes fixed
+  // see CSS bab'
+
+  // the scroll event listener that turns it into the one that is fixed while scrolling
+  window.addEventListener('scroll', fixNav);
+
 </script>
 
 </body>

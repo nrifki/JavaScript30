@@ -36,6 +36,70 @@
   const holes = document.querySelectorAll('.hole');
   const scoreBoard = document.querySelector('.score');
   const moles = document.querySelectorAll('.mole');
+  let lastHole;
+  let timeUp = false;
+  let score = 0;
+
+  // we need a function that will give us a random amount of time between hover minimum and maximum
+  function randTime(min, max) {
+    return Math.round(Math.random() * (max - min) + min); // for example when we logged on our console randTime(2, 2000) in other words give us a random time between a minimum of 2 milliseconds and 2 seconds we got 658 milliseconds
+  }
+
+  // now we need a function that will pick a random hole for the mole to pop up from
+  function randHole(holes) {
+    const idx = Math.floor(Math.random() * holes.length);
+    const hole = holes[idx]; // index (idx) would be 1 5 6 anything from 1 to 6 randomly generated through our const above
+    if(hole === lastHole) {
+      return randHole(holes); // if we have the same hole as the last hole generated we rerun the function until we get a different hole
+    };
+    //console.log(hole); // good we get random holes BUT sometimes we get a hole more than once... so problem
+    // let's solve it by first creating a lastHole variable all the way up with our initially defined variables
+    // and now:
+    lastHole = hole; // now the reference is saved >>> let's add an if statement to prevent from having this issue
+    return hole; // so we get the hole and not a reference to its dom
+  }
+
+  // time to get the the mole poping up and down
+  function peep() {
+    const time = randTime(200, 2000);
+    const hole = randHole(holes);
+    hole.classList.add('up'); // triggers our css
+    // hehe now they pop up ... but they don't go away
+    setTimeout(() => {
+      hole.classList.remove('up');
+      //peep(); // this line is to make the function run again (unless the game is over)
+      // we can't let the game run indefinitely though... let's start by adding a timeUp variable all the way up in our script
+      // and now:
+      if(!timeUp) peep();
+    }, time); // *_* IT's working
+  }
+
+  // and now we need a function that starts the game
+  // the button has already been created and this function runs onClick
+  function startGame() {
+    // first resetting the score board, timeUp, and score
+    scoreBoard.textContent = 0;
+    timeUp = false;
+    score = 0;
+    // now runnning the peep function
+    peep();
+    // only run the game for 10s
+    setTimeout(() => timeUp = true, 10000); // the game stops running after 10 seconds
+  }
+
+  // nyeheheheheeeee and NOWWW let's bonk those cute motherfuckers on the head
+  function bonk(e) {
+    //console.log(e);
+    // btw you can't fake the click if you take into consideration the isTrusted : true so:
+    if(!e.isTrusted) return; // meager cheater got its ass meageled (wtf is meagealed?)
+    // now we need to give a score when the click is on the mole that rolled from the hole (hihi)
+    // first defin a score variable up above
+    score++;
+    this.parentNode.classList.remove('up'); //so we don't wait until their time runs out == as soon as clicked on, the moles disappear again
+    scoreBoard.textContent = score; // update the score as the moles are clicked
+  }
+
+  moles.forEach(mole => mole.addEventListener('click', bonk));
 
 </script>
 </body>

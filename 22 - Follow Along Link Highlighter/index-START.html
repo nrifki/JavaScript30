@@ -27,6 +27,47 @@
 
   <script>
     // 👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀
+
+    // grabbing all the triggers (here all the links on the page)
+    const triggers = document.querySelectorAll('a');
+    
+    // now we need to create a highlight
+    const highlight = document.createElement('span'); // first creating the span that will be highlighted
+    highlight.classList.add('highlight'); // add the class of highlight to the span
+    document.body.append(highlight); // and now put that span with class of highlight into the DOM
+
+    // now we need to listen for when someone enters the area to highlight
+    // FIRST create the function
+    function highlightLink() {
+      //console.log(this); // console logs the a with the href link
+      
+      // now we need to figure out the width, height, x, and y of the a element
+      // plus we need to figure out how big is the element hovered
+      // also where on the page is that actual element
+      const linkCoords = this.getBoundingClientRect();
+      //console.log(linkCoords); // now we get all the info (x + y + width + top)
+      
+      // the variable we'll be using to refactor the code below (replacing linkCoods with coods)
+      const coords = {
+        width: linkCoords.width,
+        height: linkCoords.height,
+        top: linkCoords.top + window.scrollY,
+        left: linkCoords.left + window.scrollX
+      }
+
+      // so now let's apply the highlight style using the element width and height
+      highlight.style.width = `${coords.width}px`;
+      highlight.style.height = `${coords.height}px`;
+      // now they need to be animated moving from the element hovered to the next one hovered
+      highlight.style.transform = `translate(${coords.left}px, ${coords.top}px)`;
+      // OH SWEEEEEETY! you think you're done
+      // eh bah non!!! as soon s you scroll down the highlight changes position so it doesn't follow you as you scroll 
+      // WE HAVE TO GO BACK AND REFACTOR THIS WHOLE CODE
+      // (all the lines starting with highlight in this function with the const coords)
+    }
+    // SECOND listen to the mouse enter event on each of our link that we grabbed above (triggers)
+    triggers.forEach(a => a.addEventListener('mouseenter', highlightLink));
+
   </script>
 </body>
 </html>

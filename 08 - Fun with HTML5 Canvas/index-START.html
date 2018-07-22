@@ -6,7 +6,111 @@
 </head>
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
+
 <script>
+
+  // grabbing the html canvas element (with the id of draw)
+  const canvas = document.querySelector('#draw');
+
+  // you actually don't draw on the canvas... you draw on the context
+  // context can be 2d or 3d
+  const ctx = canvas.getContext('2d');
+
+  // size up the canvas so it can be the exact width and height of the browser window (any browser / size)
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // default styling : color + line shape
+  ctx.strokeStyle = '#BADA55';
+  // without the roundness it gives us funcky lines :D
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  // to make the line bigger
+  ctx.lineWidth = 50;
+
+  // we can even play around at the end with global composite operations
+  // this one superposes color (mixes them as they meet)
+  // ctx.globalCompositeOperation = 'multiply';
+
+  // dummy variables
+  let isDrawing = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  // making our lines rainbowish :)
+  // (step 1)
+  let hue = 0;
+
+  // how about we also increase and decrease our line width :)
+  // (step 2)
+  let direction = true;
+
+  // the function will do its magoc whenever we have our mousedown and mousemove
+  function draw(e) {
+    if (!isDrawing) return; // stop the function from running when they are not moused down
+    console.log(e);
+
+    // making our lines rainbowish :)
+    // (step 2: instead of the default '#BADA55' we're red the 0 at the begining of the hue spectrum)
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+
+    // how about we also increase and decrease our line width :)
+    // (step 1: let's do that using our hue variable, so as the hue value increases, the width also does)
+    // ctx.lineWidth = hue;
+    // (step 3: we don't want the line above)
+
+    // start our actual drawing
+    ctx.beginPath();
+    // (START FROM) the default coordinates we wrote earlier
+    // because we don't want to alwas start from the default variables (and go to the mouseddown coordinates)
+    // we need to update them whenever the function runs (see a little down below)
+    ctx.moveTo(lastX, lastY);
+    // (GO TO) offsetX and offsetY come from the event happened (we can see it in the console.log)
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+
+    // making our lines rainbowish :)
+    // (step 3: so as we move along the coordinates the hue value increases)
+    hue++;
+    // making our lines rainbowish :)
+    // (here even if we're going way over 360 as we move along the X,Y it still goes along the hue spectrum)
+    // (step 4: but we can reset it to 0 if it goes over 360)
+    if(hue >= 360) {
+      hue = 0;
+    }
+
+    // how about we also increase and decrease our line width :)
+    // (step 4: so as we move along the coordinates the lineWidth value increases)
+    // ctx.lineWidth++;
+    // (step 5 : nah to the line above! because it just keeps incrementing infinitely so let's use this instead)
+    if(ctx.lineWidth >= 50 || ctx.lineWidth <= 1) {
+      direction = !direction; // we're flipping the direction whenever one of the two conditions above is met
+    }
+    // as the direction flips the lineWidth increments and decrements
+    if(direction) {
+      ctx.lineWidth++;
+    } else {
+      ctx.lineWidth--;
+    }
+  }
+
+  // after updating the function we don't start anymore from the default point everytime
+  // but we start from the last point everytime
+  // so to fix this we will some things to this event listener 
+  //canvas.addEventListener('mousedown', () => isDrawing = true);
+  // so it becomes:
+  canvas.addEventListener('mousedown', (e) => {
+    isDrawing = true;
+    // updates the X, Y the same way we did in the function above
+    // so before we do our mousemove (and as soon as we did our mousedown), the X,Y updates
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+  });
+
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', () => isDrawing = false);
+  canvas.addEventListener('mouseout', () => isDrawing = false);
+
 </script>
 
 <style>

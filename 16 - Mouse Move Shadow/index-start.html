@@ -35,6 +35,57 @@
   </style>
 
 <script>
+  const hero = document.querySelector('.hero'); // grabbing the class
+  const text = hero.querySelector('h1'); // grabbing the element from the class
+  const walk = 100;
+
+  function shadow(e) {
+    // FIRST
+    // get the width and the height of the thing we're hovering on : the hero
+    //const width = hero.offsetWidth;
+    //const height = hero.offsetHeight;
+    // better do it with the destructured method :
+    const { offsetWidth: width, offsetHeight: height } = hero;
+
+    // THEN
+    // we get the info on where the person's cursor is
+    let { offsetX: x, offsetY: y } = e; // we're using let instead of const because of the next thing we're doing (see below)
+  
+    // SO
+    // if there are children of the thing we're hovering on (the hero)
+    // it's going to give us its own x and y
+    // so we need to do this (and that's why we used let instead of const here above)
+    // let's normalize :
+    if (this !== e.target) {
+      // this is the hero and e.target is where the event is happening
+      x = x + e.target.offsetLeft;
+      y = y + e.target.offsetTop;
+    }
+
+    // NOW
+    // we need to figure out how far the text shadow should go
+    // we're going to use something wes calls a "walk"
+    // if the cursor is all the way at the top let >>> how much over and back should the shadow go ?
+    // and so on for all corners
+    // so the walk is simply how many picels (AT ITS MOST) should the shadow be stretched to ?
+    // in this case let's say the walk = 100 px (see above where we defined our const)
+    // now we're going to use the walk in our equation
+    // SO if it's all the way in the bottom right it's not 200 px (for eg) but only 100px
+    // AND ......................... top left ............ 0 px but -100px;
+    const xWalk = Math.round((x / width * walk) - (walk / 2));
+    const yWalk = Math.round((y / height * walk) - (walk / 2)); // math.round is just to get whole numbers (10 instead of 10.568346578 for instance)
+  
+    // FINALLY
+    // setting the text shadow style (of course backticks...)
+    text.style.textShadow = `
+      ${xWalk}px ${yWalk}px 0 rgba(255, 0, 255, 0.7),
+      ${xWalk * -1 }px ${yWalk}px 0 rgba(0, 255, 255, 0.7),
+      ${yWalk}px ${xWalk}px 0 rgba(0, 0, 255, 0.7),
+      ${yWalk * -1 }px ${xWalk}px 0 rgba(0, 0, 255, 0.7)
+    `;
+  }
+
+  hero.addEventListener('mousemove', shadow);
 </script>
 </body>
 </html>

@@ -23,6 +23,10 @@ body {
   transition: transform 0.5s;
 }
 
+body.fixed-nav .site-wrap {
+  transform: scale(1);
+}
+
 header {
   text-align: center;
   height:50vh;
@@ -48,6 +52,12 @@ nav {
   z-index: 1;
 }
 
+/* creating our style for the fixed-nav */
+.fixed-nav nav {
+  position: fixed;
+  box-shadow: 0 5px rgba(0,0,0,0.1)
+}
+
 nav ul {
   margin: 0;
   padding:0;
@@ -70,6 +80,13 @@ li.logo {
   transition: all .5s;
   font-weight: 600;
   font-size: 30px;
+}
+
+/* so about that logo */
+.fixed-nav li.logo {
+  max-width: 500px;
+  /* the animation is already taking care of in the li.logo */
+  /* by the way we used max-width and not width because we can't animate width while we can play as we like with max-width*/
 }
 
 li.logo a {
